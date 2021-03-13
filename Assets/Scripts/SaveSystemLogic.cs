@@ -7,11 +7,12 @@ using UnityEngine;
 public class SaveSystemLogic : MonoBehaviour
 {
     private const string FILE_PATH = "/data.RBA";
-    private DataModel DataModel;
+    private DataModel dataModel;
 
     private void Start()
     {
-        DataModel = LoadDataModel();
+        //Reset();
+        dataModel = LoadDataModel();
     }  
 
 
@@ -56,5 +57,23 @@ public class SaveSystemLogic : MonoBehaviour
 
         formatter.Serialize(stream, data);
         stream.Close();
+    }
+
+    public void SaveHangboardProgram(HangboardProgram newHangboardProgram)
+    {
+        
+        List<HangboardProgram> tempList = new List<HangboardProgram>();
+        if(dataModel.hangboardPrograms != null)
+        {
+            foreach (HangboardProgram o in dataModel.hangboardPrograms)
+            {
+                tempList.Add(o);
+            }
+        }
+        
+        tempList.Add(newHangboardProgram);
+
+        dataModel.hangboardPrograms = tempList.ToArray();
+        SaveDataModel(dataModel);
     }
 }

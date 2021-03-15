@@ -2,19 +2,41 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using TMPro;
 using UnityEngine;
 
 public class SaveSystemLogic : MonoBehaviour
 {
+    public UiManager uiManager;
+
     private const string FILE_PATH = "/data.RBA";
     private DataModel dataModel;
 
     private void Start()
     {
-        //Reset();
-        dataModel = LoadDataModel();
+        Initialize();        
     }  
 
+    public void Initialize()
+    {
+        string path = Application.persistentDataPath + FILE_PATH;
+        if (!File.Exists(path))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Create);
+
+            DataModel data = new DataModel();
+
+
+            formatter.Serialize(stream, data);
+            stream.Close();
+        }
+        else
+        {
+            dataModel = LoadDataModel();
+        }
+        
+    }
 
     public  void SaveDataModel(DataModel data)
     {
@@ -57,6 +79,9 @@ public class SaveSystemLogic : MonoBehaviour
 
         formatter.Serialize(stream, data);
         stream.Close();
+
+        dataModel = LoadDataModel();
+        uiManager.LoadPrograms();
     }
 
     public void SaveHangboardProgram(HangboardProgram newHangboardProgram)

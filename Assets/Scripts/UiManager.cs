@@ -24,7 +24,10 @@ public class UiManager : MonoBehaviour
 
     public TMP_InputField[] hangboardForm;
     public TMP_InputField HangboardNameInput;
+    public TMP_Text exercicesNameText;
     private List<string> hangboardExercicesList = new List<string>();
+    private int numberOfSet = 0;
+    
     
 
 
@@ -44,6 +47,24 @@ public class UiManager : MonoBehaviour
     public void OnSubmitHangboardExercice()
     {
         hangboardExercicesList.Add(HangboardNameInput.text);
+
+        numberOfSet++;
+        hangboardForm[5].text = "" + numberOfSet;
+
+        volume.SetActive(false);
+        addhangboardModal.SetActive(false);
+
+        exercicesNameText.text = "";
+        foreach (string exercice in hangboardExercicesList)
+        {
+            exercicesNameText.text += exercice;
+            Debug.Log(exercice + "  " + hangboardExercicesList[numberOfSet - 1] + "   " + numberOfSet);
+            if (!exercice.Equals(hangboardExercicesList[numberOfSet - 1]))
+            {
+                exercicesNameText.text += " / ";
+            }
+            
+        }
     }
 
     public void OnSubmitHangboardProgram()
@@ -72,6 +93,12 @@ public class UiManager : MonoBehaviour
         addProgramModal.SetActive(true);
     }
 
+    public void OnAddNewHangboardExercice()
+    {
+        volume.SetActive(true);
+        addhangboardModal.SetActive(true);
+    }
+
     public void OnSubmitAddProgramModal()
     {
         programListCanvas.SetActive(false);
@@ -81,6 +108,12 @@ public class UiManager : MonoBehaviour
         if(programTypeDropdown.options[programTypeDropdown.value].text == "Hangboard")
         {
             addHangboardCanvas.SetActive(true);
+            exercicesNameText.text = "empty...";
+            numberOfSet = 0;
+            foreach(TMP_InputField input in hangboardForm)
+            {
+                input.placeholder.GetComponent<Text>().text = "";
+            }
         }
     }
 

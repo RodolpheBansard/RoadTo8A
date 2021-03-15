@@ -14,6 +14,11 @@ public class HangboardSequencer : MonoBehaviour
     public TMP_Text numberOfSetsText;
     public TMP_Text hangNameText;
 
+    public AudioSource audioSource;
+    public AudioClip bipHang;
+    public AudioClip bipPause;
+    public AudioClip bipRest;
+
     private string programName;
     private int hangTime;
     private int restBetweenHangs;
@@ -38,19 +43,19 @@ public class HangboardSequencer : MonoBehaviour
         if(hangTimeLeft > 0)
         {
             hangTimeLeft -= Time.deltaTime;
-            hangTimeText.text = "" + (int)hangTimeLeft;
+            hangTimeText.text = "" + Mathf.Ceil(hangTimeLeft);
         }
 
         if(restBetweenHangLeft > 0)
         {
             restBetweenHangLeft -= Time.deltaTime;
-            restBetweenHangsText.text = "" + (int)restBetweenHangLeft;
+            restBetweenHangsText.text = "" + Mathf.Ceil(restBetweenHangLeft);
         }
 
         if (restBetweenSetLeft > 0)
         {
             restBetweenSetLeft -= Time.deltaTime;
-            restBetweenSetsText.text = "" + (int)restBetweenSetLeft;
+            restBetweenSetsText.text = "" + Mathf.Ceil(restBetweenSetLeft);
         }
     }
 
@@ -68,7 +73,7 @@ public class HangboardSequencer : MonoBehaviour
         programNameText.text = programName;
         numberOfHangsText.text = "1/" + numberOfHangs;
         numberOfSetsText.text = "1/" + numberOfSets;
-        hangNameText.text = "test";
+        hangNameText.text = hangsName[0];
     }
 
     public void StartSequencer()
@@ -80,19 +85,22 @@ public class HangboardSequencer : MonoBehaviour
     {
         for(currentSet = 1; currentSet < numberOfSets + 1; currentSet++)
         {
-            hangNameText.text = "test" + currentSet;
+            hangNameText.text = hangsName[currentSet-1];
             numberOfSetsText.text = currentSet + "/" + numberOfSets;
 
             for(currentRound = 1; currentRound<numberOfHangs + 1; currentRound++)
             {
                 numberOfHangsText.text = currentRound + "/" + numberOfHangs;
                 hangTimeLeft = hangTime;
+                audioSource.PlayOneShot(bipHang, 1);
                 yield return new WaitForSeconds(hangTime);
                 restBetweenHangLeft = restBetweenHangs;
+                audioSource.PlayOneShot(bipPause, 1);
                 yield return new WaitForSeconds(restBetweenHangs);
             }
 
             restBetweenSetLeft = restBetweenSets;
+            audioSource.PlayOneShot(bipRest, 1);
             yield return new WaitForSeconds(restBetweenSets);
             
         }
